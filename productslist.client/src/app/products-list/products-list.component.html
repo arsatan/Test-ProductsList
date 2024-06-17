@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+<head>
+</head>
+<body>
+  <h3>Список товаров в БД (локальная SQLite)</h3>
+  <p *ngIf="!products"><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationangular">https://aka.ms/jspsintegrationangular</a> for more details.</em></p>
+<table mat-table *ngIf="products" class="mat-table" [dataSource]="dataSource">
+  <ng-container matColumnDef="name">
+    <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>Наименование</th>
+   <td mat-cell *matCellDef="let element; let i = index">
+      <input matInput type="text" id={{i}} name="name" #thisName (click)="thisName.select()" value={{products[i].name}}
+             formControlName="name" placeholder={{products[i].name}} (blur)="onChange($event)">
+    </td>
+    <td mat-footer-cell class="mat-footer-cell" *matFooterCellDef></td>
+  </ng-container>
+  <ng-container matColumnDef="price">
+    <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>Цена</th>
+    <!--<td mat-cell class="mat-cell" *matCellDef="let products"> {{products.price}} </td>-->
+    <td mat-cell *matCellDef="let element; let i = index">
+      <input matInput type="number" id={{i}} name="price" #thisPrice (click)="thisPrice.select()" value={{products[i].price}}
+             formControlName="price" placeholder={{products[i].price}} (blur)="onChange($event)">
+    </td>
+    <td mat-footer-cell class="mat-footer-cell" *matFooterCellDef> {{getTotalCost()}} </td>
+  </ng-container>
+  <ng-container matColumnDef="comment">
+    <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>Примечание</th>
+    <!--<td mat-cell class="mat-cell" *matCellDef="let products"> {{products.comment}} </td>-->
+    <td mat-cell *matCellDef="let element; let i = index">
+      <input matInput type="text" id={{i}} name="comment" #thisComment (click)="thisComment.select()" value={{products[i].comment}}
+             formControlName="comment" placeholder={{products[i].comment}} (blur)="onChange($event)">
+    </td>
+    <td mat-footer-cell class="mat-footer-cell" *matFooterCellDef></td>
+  </ng-container>
+  <ng-container matColumnDef="edit">
+    <th mat-header-cell class="mat-header-cell" *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let element; let i = index">
+      <products-update-button [id]=$any(products[i].id) [product]=$any(products[i]) (update)="update($event)"></products-update-button>
+    </td>
+    <td mat-footer-cell class="mat-footer-cell" *matFooterCellDef>
+      <products-add-button (update)="add($event)"></products-add-button>
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="delete">
+    <th mat-header-cell class="mat-header-cell" *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let element; let i = index">
+      <products-delete-button [id]=$any(products[i].id) (update)="delete($event)"></products-delete-button>
+    </td>
+    <td mat-footer-cell class="mat-footer-cell" *matFooterCellDef></td>
+  </ng-container>
+  <ng-container matColumnDef="addorder">
+    <th mat-header-cell class="mat-header-cell" *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let element; let i = index">
+     <products-addorder-button [id]=$any(products[i].id) [product]=$any(products[i]) (update)="update($event)"></products-addorder-button>
+      <!--<products-order-button [id]=$any(products[i].id) (update)="delete($event)"></products-order-button>-->
+      <!--<input matInput type="button" id=i value="Заказать">-->
+    </td>
+    <td mat-footer-cell class="mat-footer-cell" *matFooterCellDef></td>
+  </ng-container>
+
+
+
+  <!--<ng-template #dataField>
+    <mat-form-field>
+      <input [type]="product.name"
+             matInput
+             [(ngModel)]="element[product.name]" />
+    </mat-form-field>
+  </ng-template>-->
+  <!--<ng-container matColumnDef="buttons">
+    <td>
+      <button *ngIf="enableEdit && enableEditIndex == i" (click)="enableEdit=false" class="btn page-secondary-action-btn" ng-click="cancel()">Отмена</button>
+      <button *ngIf="enableEdit && enableEditIndex == i" id="saveBtn" class="btn page-primary-action-btn" (click)="update(product.id)" type="submit">Сохранить</button>
+      <a href="#" class="table-row-action edit-action" *ngIf="!enableEdit" (click)="enableEditMethod($event, i)">Редактировать </a>
+    </td>
+  </ng-container>-->
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let product; index as i; columns: displayedColumns">></tr>
+  <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+</table>
+
+
+  <!--<table mat-table [dataSource]="dataSource">
+  <ng-container [matColumnDef]="product.name" *ngFor="let product of products">
+    <th mat-header-cell *matHeaderCellDef>
+      {{ product.name }}
+    </th>
+    <td mat-cell *matCellDef="let element">
+      <div [ngSwitch]="product.name" *ngIf="!element.isEdit">
+        <div class="btn-edit" *ngSwitchCase="'isEdit'">
+          <button mat-button (click)="element.isEdit = !element.isEdit">Edit</button>
+        </div>
+        <span *ngSwitchDefault>
+          {{ element[product.name] }}
+        </span>
+      </div>
+      <div *ngIf="element.isEdit">
+        <div class="btn-edit" *ngIf="product.name === 'isEdit'; else dataField">
+          <button mat-button (click)="element.isEdit = !element.isEdit">Done</button>
+        </div>
+        <ng-template #dataField>
+          <mat-form-field>
+            <input [type]="product.name"
+                   matInput
+                   [(ngModel)]="element[product.name]" />
+          </mat-form-field>
+        </ng-template>
+      </div>
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>-->
+
+
+
+</body>
+</html>

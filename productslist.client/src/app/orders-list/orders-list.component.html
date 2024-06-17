@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head>
+</head>
+<body>
+  <h3>Список заказов в БД (локальная SQLite)</h3>
+  <p *ngIf="!orders"><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationangular">https://aka.ms/jspsintegrationangular</a> for more details.</em></p>
+
+  <table mat-table *ngIf="orders" class="mat-table" [dataSource]="dataSource">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>Заказ</th>
+      <td mat-cell *matCellDef="let element; let i = index">
+        <input matInput type="text" id={{i}} name="name" #thisName (click)="thisName.select()" value={{orders[i].name}}
+               formControlName="name" placeholder={{orders[i].name}} (blur)="onChange($event)" readonly="readonly">
+      </td>
+      <td mat-footer-cell class="mat-footer-cell" *matFooterCellDef></td>
+    </ng-container>
+    <ng-container matColumnDef="productName">
+      <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>Наименование товара</th>
+      <!--<td mat-cell *matCellDef="let element; let i = index">
+        <input matInput type="text" id={{i}} name="productName" #thisName (click)="thisName.select()" value={{orders[i].orderedProducts[0]}}
+               formControlName="name" placeholder={{orders[i].orderedProducts[0]}} (blur)="onChange($event)" readonly="readonly">
+      </td>-->
+      <td mat-cell *matCellDef="let element; let i = index">
+        <input matInput type="text" id={{i}} name="comment" #thisName (click)="thisName.select()" value={{orders[i].comment}}
+               formControlName="name" placeholder={{orders[i].comment}} (blur)="onChange($event)" readonly="readonly">
+      </td>
+      <td mat-footer-cell class="mat-footer-cell" *matFooterCellDef></td>
+    </ng-container>
+    <ng-container matColumnDef="comment">
+      <th mat-header-cell class="mat-header-cell" *matHeaderCellDef>Примечание</th>
+      <td mat-cell *matCellDef="let element; let i = index">
+        <input matInput type="text" id={{i}} name="comment" #thisComment (click)="thisComment.select()" value={{orders[i].comment}}
+               formControlName="comment" placeholder={{orders[i].comment}} (blur)="onChange($event)">
+      </td>
+      <td mat-footer-cell class="mat-footer-cell" *matFooterCellDef></td>
+    </ng-container>
+    <ng-container matColumnDef="edit">
+      <th mat-header-cell class="mat-header-cell" *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let element; let i = index">
+        <orders-update-button [id]=$any(orders[i].id) [order]=$any(orders[i]) (update)="update($event)"></orders-update-button>
+      </td>
+      <!--<td mat-footer-cell class="mat-footer-cell" *matFooterCellDef>
+        <orders-add-button (update)="add($event)"></orders-add-button>
+      </td>-->
+    </ng-container>
+    <ng-container matColumnDef="delete">
+      <th mat-header-cell class="mat-header-cell" *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let element; let i = index">
+        <orders-delete-button [id]=$any(orders[i].id) (update)="delete($event)"></orders-delete-button>
+      </td>
+      <td mat-footer-cell class="mat-footer-cell" *matFooterCellDef></td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let order; index as i; columns: displayedColumns">></tr>
+    <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+  </table>
+</body>
+</html>

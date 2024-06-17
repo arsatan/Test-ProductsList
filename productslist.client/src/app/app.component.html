@@ -1,0 +1,40 @@
+<html>
+<body>
+  <!--<h1 id="tableLabel">Заказ товаров</h1>-->
+
+  <h2>
+    Тестовое задание: заказ товаров. <br />
+    (Angular/.NET 8)
+  </h2>
+  <hr class="line">
+  <div class="block" style="text-align:center">
+    <mat-button-toggle-group #group="matButtonToggleGroup" name="mainMenu" aria-label="Main menu"
+                             [value]="selectedValue" (change)="onValueChange(group.value)">
+      <mat-button-toggle value="products">Товары</mat-button-toggle>
+      <mat-button-toggle value="orders">Заказы</mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+  <table>
+    <tr>
+      <td></td>
+      <td>
+        <div *ngIf="this.selectedValue=='products'; then thenBlock else elseBlock"></div>
+        <ng-template #thenBlock><products-list></products-list></ng-template>
+        <ng-template #elseBlock><orders-list></orders-list></ng-template>
+      </td>
+      <td></td>
+    </tr>
+  </table>
+  <!--<table>
+    <tr>
+      <td></td>
+      <td>
+        <div class="block" style="text-align:center">
+          <log-output></log-output>
+        </div>
+      </td>
+      <td></td>
+    </tr>
+  </table>-->
+</body>
+</html>
